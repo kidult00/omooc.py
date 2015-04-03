@@ -9,6 +9,7 @@ ShapeType = "circle"
 ShapeColor = "green"
 Radius = 15
 shape_list = []
+clickCount = 0
 
 
 # helper function
@@ -41,7 +42,7 @@ def draw_red():
 
 
 def mouseclick(pos):
-    global ShapeType,ShapeColor,shape_list,Radius
+    global ShapeType,ShapeColor,shape_list,Radius,clickCount
     
     x = pos[0]
     y = pos[1]
@@ -55,8 +56,11 @@ def mouseclick(pos):
 
     print pos
 
-    shape_list.append([pos,ShapeType,ShapeColor])
+    if clickCount < 1024 :
+        shape_list.append([pos,ShapeType,ShapeColor])
+        clickCount += 1
 
+    print shape_list
 
 def draw(canvas):
     global ShapeType,ShapeColor,shape_list,Radius
@@ -65,6 +69,8 @@ def draw(canvas):
             canvas.draw_circle(shapes[0],Radius, 1, "Black",shapes[2])
         else:
             canvas.draw_polygon(shapes[0], 1, "Black",shapes[2])
+
+    canvas.draw_text(str(clickCount)+"st click" ,(10,10),12,"black")
  
 
 # create frame and controls
