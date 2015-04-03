@@ -10,6 +10,7 @@ ShapeColor = "green"
 Radius = 15
 shape_list = []
 clickCount = 0
+Interval = 500
 
 
 # helper function
@@ -73,9 +74,26 @@ def draw(canvas):
     canvas.draw_text(str(clickCount)+"st click" ,(10,10),12,"black")
  
 
+def replayStep():
+    global clickCount,Radius
+    if clickCount > 0 :
+        if shape_list[clickCount-1][1] == "circle":
+            canvas.draw_circle(shape_list[clickCount],Radius,1,"Black",shape_list[clickCount][2] )
+        else :
+            canvas.draw_polygon(shape_list[clickCount],1,"Black",shape_list[clickCount][2] )
+        clickCount -= 1
+
+def replay():
+    timer.start()
+
+
+def stop():
+    timer.stop()
+
 # create frame and controls
 frame = simplegui.create_frame("Palette", 500, 500)
 frame.set_canvas_background("White")
+
 
 
 # register event handlers
@@ -88,6 +106,11 @@ frame.add_button("正方形\n",draw_square,100)
 frame.add_button("绿色\n",draw_green,100)
 frame.add_button("蓝色\n",draw_blue,100)
 frame.add_button("红色\n",draw_red,100)
+
+frame.add_button("回放\n",replay,100)
+frame.add_button("停止\n",stop,100)
+
+timer = simplegui.create_timer(500,replayStep）
 
 # get things rolling
 frame.start()
