@@ -3,6 +3,8 @@
 import simplegui
 #import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 import math
+import urllib2
+import codeskulptor
 
 # intialize globals
 ShapeType = "circle"
@@ -12,9 +14,10 @@ shape_list = []
 history_list = []
 clickCount = 0
 step = 0
+interval = 500
 
 
-# helper function
+# helper function 
      
 # define event handlers for shapes
 
@@ -44,11 +47,16 @@ def draw_red():
     global ShapeColor
     ShapeColor = "red"
 
-# define event handlers for click & draw
+
+# define event handlers for click & draw & reset
 
 def mouseclick(pos):
     global ShapeType,ShapeColor,shape_list,history_list,Radius,clickCount
     
+    # 如果正在回放，结束并跳出
+    if timer.is_running():
+        return
+
     x = pos[0]
     y = pos[1]
 
@@ -72,15 +80,25 @@ def mouseclick(pos):
 
 
 def draw(canvas):
-    global shapes,shape_list,Radius,clickCount
+    global shapes,shape_list,Radius,clickCount,interval
+    
     for shapes in shape_list:
         if shapes[1] == "circle":
             canvas.draw_circle(shapes[0],Radius, 1, "Black",shapes[2])
         else:
             canvas.draw_polygon(shapes[0], 1, "Black",shapes[2])
-
+    
     # 在画布上显示已点击次数
-    canvas.draw_text(str(clickCount)+"st click" ,(10,10),12,"black")
+    if clickCount == 0:
+        canvas.draw_text("Draw shapes below :)",(10,15),12,"black")
+    elif clickCount ==1:
+        canvas.draw_text("You've drawed "+str(clickCount)+" shape" ,(10,15),12,"black")
+    else:
+        canvas.draw_text("You've drawed "+str(clickCount)+" shapes" ,(10,15),12,"black")
+
+    if interval !=500:
+        canvas.draw_text("Replay interval is:"+str(interval)+"ms" ,(10,30),12,"black")
+
 
  
 # define event handlers for timer
@@ -106,6 +124,22 @@ def replay():
 def stop():
     timer.stop()
 
+def speedup():
+    global interval,timer
+    if timer.is_running():
+        timer.stop()
+        interval = interval/2
+        timer = simplegui.create_timer(interval,replayStep)
+        timer.start()
+
+def slowdown():
+    global interval,timer
+    if timer.is_running():
+        timer.stop()
+        interval = interval*2
+        timer = simplegui.create_timer(interval,replayStep)
+        timer.start()
+
 
 # create frame and controls
 frame = simplegui.create_frame("Palette", 500, 500)
@@ -124,13 +158,21 @@ frame.add_label("请选择颜色：\n",200)
 frame.add_button("绿色\n",draw_green,100)
 frame.add_button("蓝色\n",draw_blue,100)
 frame.add_button("红色\n",draw_red,100)
+#color_r = frame.add_input('R', rgb_r, 50)
+#color_g = frame.add_input('G', rgb_g, 50)
+#color_b = frame.add_input('B', rgb_b, 50)
 frame.add_label(" ",100)
 # register event handlers for replay
 frame.add_label("回放绘制记录：\n",200)
 frame.add_button("开始\n",replay,100)
-frame.add_button("停止\n",stop,100)
+frame.add_button("暂停\n",stop,100)
+frame.add_button("加快一倍\n",speedup,100)
+frame.add_button("减慢一半\n",slowdown,100)
+# register event handlers for reset
+#frame.add_label("",200)
+#frame.add_button("重置\n",reset,100)
 
-timer = simplegui.create_timer(500,replayStep)
+timer = simplegui.create_timer(interval,replayStep)
 
 # get things rolling
 frame.start()
