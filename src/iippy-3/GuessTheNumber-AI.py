@@ -11,74 +11,90 @@ except ImportError:
 import random
 import math
 
-#number_range = 100
+num_max = 10
+num_min = 0
 secret_number = 0
+guess_number = 0
+result = ''
 
 # helper function to start and restart the game
-def new_game():
-    # initialize global variables used in your code here
-    global secret_number
-    secret_number = random.randrange(0, 100)
-    print "Welcome~"
-#for test	
-#    print secret_number 
+# def new_game():
+#     # initialize global variables used in your code here
+#     global secret_number,result
+#     secret_number = random.randrange(0, 10)
+#     result = 'start'
+# #for test	
+#     print secret_number 
 
 
 # define event handlers for control panel
 def range100():
     # button that changes the range to [0,100) and starts a new game 
-    global secret_number
-    secret_number = random.randrange(0, 100)
+    global secret_number,num_max,num_min
+    secret_number = random.randrange(0, 10)
     print "New game? Welcome~"
     print ""
+    num_max = 10
+    num_min = 0
+    guess_number = 0
+    
 #for test
-#    print secret_number 
+    print "secret_number is:",secret_number 
 
-def range1000():
-    # button that changes the range to [0,1000) and starts a new game     
-    global secret_number
-    secret_number = random.randrange(0, 1000)
-    #for test
-    print "New game? Welcome~"
-    print ""
-#    print secret_number 
-    
-def input_guess(guess):
-    global secret_number
-    
-    if guess.isdigit():
-        number_input = int(guess)
-        print "Your guess was: ",number_input
-        if secret_number > number_input :
-            print "Nope!Higher!"
-            print ""
-        elif secret_number < number_input :
-            print "Nope!Lower!"
-            print ""
-        else:
-            print "\(^o^)/~ Bingo!!"
-            print ""
-    else:    
-        print "Please input an integer!"
 
+    
+def ai_num():
+    global num_max,num_min
+    newAI = (num_max + num_min)/2
+
+    print "new ai:",newAI
+    return newAI
+    
+
+def compare():
+    global secret_number,guess_number,num_max,num_min,result
+    guess_number = ai_num()
+    print "Your guess was: ",guess_number
+    if secret_number > guess_number :
+         result = 'low'
+         num_min = guess_number     # set the new min
+    elif secret_number < guess_number :
+         result = 'high'
+         num_max = guess_number     # set the new max
+    else:
+         result = 'bingo'
+    
+    return result
+
+def draw(canvas):
+    global result
+    if result == 'low' :
+        canvas.draw_text("Nope~ Should be a higher one.",(10,15),12,"black")
+    elif result == 'high' :
+        canvas.draw_text("Nope~ Should be a lower one." ,(10,15),12,"black")
+    elif result == 'bingo':
+        canvas.draw_text("\(^o^)/~ Bingo!!" ,(10,15),12,"black")
+    else:
+        canvas.draw_text("Welcome~" ,(10,15),12,"black")
     
 # create frame
-frame = simplegui.create_frame('Guess the number', 500, 500)
+frame = simplegui.create_frame('Guess the number', 300, 300)
+frame.set_canvas_background("White")
+frame.set_draw_handler(draw)
 
 # create UI elements
 frame.add_label('Welcome to the game!')
 frame.add_label('')
 frame.add_button('Take a [0,100) guess',range100,200)
 frame.add_label('')
-frame.add_button('Take a [0,1000) guess',range1000,200)
-frame.add_label('')
-frame.add_input('Take a guess (integer only please)', input_guess, 200)
+frame.add_button('start',compare,200)
+#frame.add_input('Take a guess (integer only please)', compare, 200)
 
 # register event handlers for control elements and start frame
 frame.start()
 
 # call new_game 
-new_game()
+#new_game()
 
 
 # always remember to check your completed program against the grading rubric
