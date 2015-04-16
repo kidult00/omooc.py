@@ -40,6 +40,7 @@ def range100():
     num_min = 0
     guess_number = 0
     guess_list = []
+    done_list = []
     guess_time = 0
     y_pos = 10
     
@@ -75,7 +76,9 @@ def compare():
          result = 'bingo'  
     
 
-    done_list = guess_list.append([guess_time,newAI,result,y_pos])
+    
+    guess_list.append([guess_time,newAI,result,y_pos])
+    done_list = guess_list
 
     # if result == 'bingo':
     #      for i in range(len(guess_list)-1):
@@ -98,8 +101,8 @@ def draw(canvas):
             canvas.draw_text("Your guess history:"+str(guess_list) ,(10,guesses[3]+30),12,"black")
            # timer.stop()
             return
-        else:
-            canvas.draw_text("Welcome~" ,(10,guesses[3]),12,"black")
+        #else:
+        #    canvas.draw_text("Welcome~" ,(10,guesses[3]),12,"black")
  
 
 
@@ -136,7 +139,7 @@ frame.add_button('start',range100,200)
 frame.add_label('')
 frame.add_button('step by step guess',compare,200)
 #frame.add_input('Take a guess (integer only please)', compare, 200)
-#frame.add_button('replay',replay,200)
+frame.add_button('replay',replay,200)
 #frame.add_button('stop',stop,200)
 
 timer = simplegui.create_timer(interval,replayStep)
