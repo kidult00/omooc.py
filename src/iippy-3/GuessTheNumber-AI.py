@@ -1,3 +1,4 @@
+#-*- coding: utf-8 -*-
 
 #import simplegui
 try:
@@ -76,7 +77,6 @@ def compare():
          result = 'bingo'  
     
 
-    
     guess_list.append([guess_time,newAI,result,y_pos])
     done_list = guess_list
 
@@ -88,7 +88,7 @@ def compare():
 
 
 def draw(canvas):
-    global result,guess_list,guesses,y_pos
+    global result,guess_list,guesses,y_pos,guesses
     
     for guesses in guess_list :
         
@@ -113,7 +113,7 @@ def replayStep():
 
     if step < guess_time :
         for i in range(0,step):
-            guess_list.append(done_list)
+            guess_list.append(done_list[step])
         step += 1
     else:
         step = 0
@@ -140,7 +140,7 @@ frame.add_label('')
 frame.add_button('step by step guess',compare,200)
 #frame.add_input('Take a guess (integer only please)', compare, 200)
 frame.add_button('replay',replay,200)
-#frame.add_button('stop',stop,200)
+frame.add_button('stop',stop,200)
 
 timer = simplegui.create_timer(interval,replayStep)
 
